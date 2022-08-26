@@ -11,12 +11,12 @@ from pyrogram import Client, filters
 
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 
-API_ID = int(os.environ.get("API_ID", 1234))
+APP_ID = int(os.environ.get("APP_ID", ""))
 
 API_HASH = os.environ.get("API_HASH", "")
 
 
-app = Client("tgid", bot_token=TG_BOT_TOKEN, api_hash=API_HASH, api_id=API_ID)
+app = Client("tgid", bot_token=TG_BOT_TOKEN, api_hash=API_HASH, api_id=APP_ID)
 
 
 def mdisk(url):
