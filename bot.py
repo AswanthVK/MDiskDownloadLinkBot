@@ -55,12 +55,6 @@ async def start(client, message):
     await message.reply_text(text=f"Hello 👋\n\n Send me MDisk links to convert to Direct Download Link", reply_to_message_id=message.message_id)
 
 
-@app.on_message(filters.command(['id']))
-async def id(client, message):
-    await client.send_chat_action(message.chat.id, "typing")
-    await message.reply_text(text=f"`{message.chat.id}`", reply_to_message_id=message.message_id)
-
-
 @app.on_message(filters.private & filters.text)
 async def link_extract(bot, message):
     url = message.text
