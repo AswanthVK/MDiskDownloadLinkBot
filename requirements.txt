@@ -1,0 +1,4 @@
+tgcrypto
+pyrogram==1.4.8
+cloudscraper
+requests
