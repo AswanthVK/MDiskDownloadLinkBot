@@ -29,7 +29,7 @@
       "value": ""
     }        
     
-  }],
+  },
   "buildpacks": [{
     "url": "heroku/python"
   }],
