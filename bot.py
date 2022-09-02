@@ -1,11 +1,10 @@
 import os
-import re
 import string
 import asyncio
-import cloudscraper
 import requests
 import math
 import time
+from datetime import timedelta
 from pyrogram import Client, filters
 
 
@@ -17,23 +16,6 @@ API_HASH = os.environ.get("API_HASH", "")
 
 
 app = Client("tgid", bot_token=TG_BOT_TOKEN, api_hash=API_HASH, api_id=APP_ID)
-
-
-def mdisk(url):
-    api = "https://api.emilyx.in/api"
-    client = cloudscraper.create_scraper(allow_brotli=False)
-    resp = client.get(url)
-    if resp.status_code == 404:
-        return "File not found/The link you entered is wrong!"
-    try:
-        resp = client.post(api, json={"type": "mdisk", "url": url})
-        res = resp.json()
-    except BaseException:
-        return "API UnResponsive / Invalid Link!"
-    if res["success"] is True:
-        return res["url"]
-    else:
-        return res["msg"]
 
 
 def humanbytes(size):
@@ -50,6 +32,10 @@ def humanbytes(size):
     return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
 
 
+def convert(n):
+   return str(timedelta(seconds = n))
+
+
 @app.on_message(filters.command(['start']))
 async def start(client, message):
     await message.reply_text(text=f"Hello 👋\n\nSend me MDisk links to convert to Direct Download Link", reply_to_message_id=message.message_id)
@@ -57,9 +43,9 @@ async def start(client, message):
 
 @app.on_message(filters.private & filters.text)
 async def link_extract(bot, message):
-    url = message.text
-
-    if not message.text.startswith("https://mdisk"):
+    urls = message.text
+    
+    if not message.text.startswith("https://mdisk.me"):
         await message.reply_text(
             f"**INVALID LINK**",
             reply_to_message_id=message.message_id
@@ -70,18 +56,27 @@ async def link_extract(bot, message):
             text=f"Processing…",
             reply_to_message_id=message.message_id
         )
+    inp = urls #input('Enter the Link: ')
+    fxl = inp.split("/")
+    cid = fxl[-1]
+    URL=f'https://diskuploader.entertainvideo.com/v1/file/cdnurl?param={cid}'
+    header = {
+        'Accept': '*/*',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Referer': 'https://mdisk.me/',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36'
+    }
+    resp = requests.get(url=URL, headers=header).json()
+    fn = resp['filename']
+    dn = resp['display_name']
+    dr = resp['duration']
+    sz = resp['size']
+    ht = resp['height']
+    wt = resp['width']
+    download = resp['download']
     
-    mdisk(url)
-    mdisk_url = mdisk(url=url)
-    
-    r = requests.head(mdisk_url)
-    fname = None
-    if "Content-Disposition" in r.headers.keys():
-        fname = re.findall("filename=(.+)", r.headers["Content-Disposition"])[0]
-        file_ext_f_name = os.path.splitext(str(fname).replace('"', ""))[1]
-    file_size = int(requests.head(mdisk_url).headers['Content-Length'])
-    await a.edit_text("Title: {}\nSize: {}\n\nDL URL: {}".format(fname, humanbytes(file_size), mdisk_url))
-    print(mdisk(url=url))
+    await a.edit_text("**Title:** {}\n**Size:** {}\n**Duration:** {}\n**Resolution:** {}*{}\n**Uploader:** {}\n\n**Download Now:** {}".format(fn, humanbytes(sz), convert(dr), wt, ht, dn, download), disable_web_page_preview=True)
     
 
 
