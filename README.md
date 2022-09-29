@@ -2,7 +2,7 @@
 ![GitHub](https://img.shields.io/github/license/AswanthVK/MDiskDownloadLinkBot?label=license)
 ![GitHub](https://img.shields.io/badge/Version-Beta-green)
 ---
-I'm a telegram bot which converts MDisk links to Direct Download Links(Bypass mdisk requirements).
+A telegram bot which converts MDisk links to Direct Download Link, without installing MX Player (Bypass mdisk requirements).
 
 Inspired from:  https://github.com/missemily2022/mdisk-dl
 
